@@ -1,6 +1,6 @@
 import streamlit
 import pandas
-import import snowflake.connector
+import snowflake.connector
 
 conn = snowflake.connector.connect(
     user='learnatozaboutdata02',
