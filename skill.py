@@ -1,5 +1,21 @@
 import streamlit
 import pandas
+import import snowflake.connector
+
+conn = snowflake.connector.connect(
+    user='learnatozaboutdata02',
+    password='Snowflake@143#',
+    account='kl98250.ca-central-1.aws',
+    warehouse='COMPUTE_WH',
+    database='YT',
+    schema='SF_SQL'
+)
+
+# Define the dropdown options
+skill_options = ['Java', 'Python', 'SQL', 'C++']
+interest_options = ['Hiking', 'Reading', 'Cooking', 'Traveling']
+certification_options = ['AWS Certified Developer', 'CCNA', 'PMP', 'Scrum Master']
+
 streamlit.title('My Parents New Healthy Diner')
 streamlit.header('🥣Breakfast Menu')
 streamlit.text('🥗Omega 3 & Blueberry Oatmeal')
