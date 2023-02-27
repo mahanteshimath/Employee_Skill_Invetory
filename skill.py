@@ -1,55 +1,23 @@
-import streamlit as st
-import snowflake.connector
+import streamlit
+import pandas
+streamlit.title('My Parents New Healthy Diner')
+streamlit.header('🥣Breakfast Menu')
+streamlit.text('🥗Omega 3 & Blueberry Oatmeal')
+streamlit.text('🐔Kale, Spinach & Rocket Smoothie')
+streamlit.text('🥑🍞 Hard-Boiled Free-Range Egg')
 
-# Connect to Snowflake
-conn = snowflake.connector.connect(
-    user='learnatozaboutdata02',
-    password='Snowflake@143#',
-    account='kl98250.ca-central-1.aws',
-    warehouse='COMPUTE_WH',
-    database='YT',
-    schema='SF_SQL'
-)
+streamlit.header('🍌🥭 Build Your Own Fruit Smoothie 🥝🍇')
+my_fruit_list = pandas.read_csv("https://uni-lab-files.s3.us-west-2.amazonaws.com/dabw/fruit_macros.txt")
 
-# Define the dropdown options
-skill_options = ['Java', 'Python', 'SQL', 'C++']
-interest_options = ['Hiking', 'Reading', 'Cooking', 'Traveling']
-certification_options = ['AWS Certified Developer', 'CCNA', 'PMP', 'Scrum Master']
+my_fruit_list = my_fruit_list.set_index('Fruit')
 
-# Define the Snowflake table schema
-table_schema = '''
-CREATE TABLE IF NOT EXISTS employee_skillset (
-   employee_id INTEGER,
-   primary_skill VARCHAR(50),
-   secondary_skill VARCHAR(50),
-   personal_interest VARCHAR(50),
-   certification VARCHAR(50)
-);
-'''
+# Let's put a pick list here so they can pick the fruit they want to include 
+fruits_selected=streamlit.multiselect("Pick some fruits:", list(my_fruit_list.index),['Avocado','Strawberries'])
 
-# Execute the CREATE TABLE statement
-with conn.cursor() as cursor:
-    cursor.execute(table_schema)
+fruits_to_show = my_fruit_list.loc[fruits_selected]
 
-# Define the Streamlit app
-def app():
-    st.title("Employee Skillset")
-    
-    # Get employee information from the user
-    employee_id = st.number_input("Employee ID")
-    primary_skill = st.selectbox("Primary Skill", skill_options)
-    secondary_skill = st.selectbox("Secondary Skill", skill_options)
-    personal_interest = st.selectbox("Personal Interest", interest_options)
-    certification = st.selectbox("Certification", certification_options)
-    
-    # Insert the employee information into the Snowflake table
-    if st.button("Submit"):
-        with conn.cursor() as cursor:
-            cursor.execute("INSERT INTO employee_skillset VALUES (%s, %s, %s, %s, %s)", 
-                           (employee_id, primary_skill, secondary_skill, personal_interest, certification))
-            conn.commit()
-        st.success("Employee information added successfully.")
 
-# Run the Streamlit app
-if __name__ == '__main__':
-    app()
+# Display the table on the page.
+
+
+streamlit.dataframe(fruits_to_show)
